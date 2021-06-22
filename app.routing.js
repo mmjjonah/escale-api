@@ -1,7 +1,11 @@
 const ROUTES = [
   {
     path: "/user",
-    controller: 'UserController'
+    controller: "UserController"
+  },
+  {
+    path: "/auth",
+    controller: "AuthController"
   }
 ]
 

@@ -1,0 +1,53 @@
+"use strict"
+
+const express = require('express')
+const User = require('../models/User')
+const { StatusCodes } = require('http-status-codes')
+const jwt = require('jsonwebtoken')
+const { tokenExpiration } = require('../config/config')
+const bcrypt = require('bcrypt')
+
+const router = express.Router()
+
+router.post('/', async (req, res) => {
+	const { login, password} = req.body
+
+	const userData = await User.findOne({ where: { user_login: login } })
+	if (userData) {
+		let user = {
+			user_password: '',
+			user_id: '',
+			user_login: '',
+			user_lastname: '',
+			user_firstname: ''
+		}
+		user = userData.toJSON()
+		if (bcrypt.compareSync(password, user.user_password)) {
+			const token = jwt.sign({user_id: user.user_id, user_login: user.user_login}, process.env.TOKEN_KEY, {
+				expiresIn: tokenExpiration
+			})
+			delete user.user_password
+
+			res.json({
+				data: {
+					token,
+					user
+				},
+				message: `Utilisateur ${user.user_lastname} ${user.user_firstname} connecté.`,
+				status: StatusCodes.OK
+			})
+		} else {
+			res.status(StatusCodes.OK).json({
+				message: 'Mot de passe erroné.',
+				status: StatusCodes.UNAUTHORIZED
+			})
+		}
+	} else {
+		res.status(StatusCodes.OK).json({
+			message: `Utilisateur ${login} non trouvé.`,
+			status: StatusCodes.UNAUTHORIZED
+		})
+	}
+})
+
+module.exports = router

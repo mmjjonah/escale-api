@@ -1,20 +1,31 @@
 "use strict"
 
-const { Sequelize } = require('sequelize')
+const {Sequelize} = require('sequelize')
 const db = require('../config/database')
 
 module.exports = db.define("users", {
-  user_id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true
-    },
-    user_nom: {
-      type: Sequelize.STRING
-    },
-    user_prenom: {
-      type: Sequelize.STRING
-    }
-  }, { 
-    timestamps: false 
-  }
+		user_id: {
+			type: Sequelize.INTEGER,
+			primaryKey: true,
+			autoIncrement: true
+		},
+		user_lastname: {
+			type: Sequelize.STRING
+		},
+		user_firstname: {
+			type: Sequelize.STRING
+		},
+		user_email: {
+			type: Sequelize.STRING
+		},
+		user_login: {
+			type: Sequelize.STRING(100),
+			unique: true
+		},
+		user_password: {
+			type: Sequelize.TEXT
+		}
+	}, {
+		timestamps: false
+	}
 )

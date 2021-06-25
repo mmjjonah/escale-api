@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le :  mar. 22 juin 2021 à 15:23
+-- Généré le :  ven. 25 juin 2021 à 09:17
 -- Version du serveur :  10.1.38-MariaDB
 -- Version de PHP :  7.3.2
 
@@ -34,15 +34,16 @@ CREATE TABLE `users` (
   `user_firstname` varchar(100) NOT NULL,
   `user_login` varchar(100) NOT NULL,
   `user_email` varchar(100) DEFAULT NULL,
-  `user_password` text NOT NULL
+  `user_password` text NOT NULL,
+  `user_status` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Déchargement des données de la table `users`
 --
 
-INSERT INTO `users` (`user_id`, `user_lastname`, `user_firstname`, `user_login`, `user_email`, `user_password`) VALUES
-(2, 'Maheriniaina', 'Michaël Jonathan', 'mmjjonah', 'mmjjonah@yopmail.com', '$2b$10$jKtAkbDT9EtZmXGShO/ZIeM/53TAZzdnjgY/2cG5D3QUr9EIa16YW');
+INSERT INTO `users` (`user_id`, `user_lastname`, `user_firstname`, `user_login`, `user_email`, `user_password`, `user_status`) VALUES
+(2, 'Maheriniaina', 'Michaël Jonathan', 'mmjjonah', 'mmjjonah@yopmail.com', '$2b$10$jKtAkbDT9EtZmXGShO/ZIeM/53TAZzdnjgY/2cG5D3QUr9EIa16YW', 'ACTIVE');
 
 --
 -- Index pour les tables déchargées

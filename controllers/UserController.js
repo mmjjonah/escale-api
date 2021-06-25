@@ -14,9 +14,7 @@ router.get('/', async (req, res) => {
   const { q } = req.query
   if (q) {
     filter = {
-      attributes: {
-        excludes: ['user_password']
-      },
+      ...filter,
       where: {
         [Op.or]: {
           user_lastname: {
@@ -30,7 +28,12 @@ router.get('/', async (req, res) => {
     }
   }
 
-  const users = await User.findAll(filter)
+  const users = await User.findAll({
+    ...filter,
+    attributes: {
+      exclude: ['user_password']
+    }
+  })
   res.json({
     message: `Liste des utilisateurs.`,
     data: users,
@@ -41,10 +44,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params
   const user = await User.findByPk(id)
-  let data = {
-    user_password: ''
-  }
-  data = user.toJSON()
+  let data = user.toJSON()
   delete data.user_password
   res.json({
     message: `Utilisateur id: ${id}.`,
@@ -54,15 +54,15 @@ router.get('/:id', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-  const { lastname, firstname, email, login, password } = req.body
+  const { user_lastname, user_firstname, user_email, user_login, user_password } = req.body
 
-  const hashPassword = bcrypt.hashSync(password, 10)
+  const hashPassword = bcrypt.hashSync(user_password, 10)
 
   const userData = await User.build({
-    user_lastname: lastname,
-    user_firstname: firstname,
-    user_email: email,
-    user_login: login,
+    user_lastname,
+    user_firstname,
+    user_email,
+    user_login,
     user_password: hashPassword
   })
 
@@ -73,8 +73,35 @@ router.post('/', async (req, res) => {
     data.user_password = undefined;
     delete data.user_password
     res.status(StatusCodes.CREATED).json({
-      message: `Utilisateur ${lastname} ${firstname} enregistré`,
+      message: `Utilisateur ${user_lastname} ${user_firstname} enregistré`,
       data
+    })
+  } else {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR)
+  }
+})
+
+router.patch('/:id', async (req, res) => {
+  const { id } = req.params
+  const cols = [ 'user_lastname', 'user_firstname', 'user_email', 'user_password', 'user_login', 'user_status' ]
+  let values = {}
+  cols.map(col => {
+    if (req.body[col]) {
+      values[col] = req.body[col]
+    }
+  })
+
+  const user = await User.update(values, {
+    where: {
+      user_id: id
+    }
+  })
+
+  if (user) {
+    res.json({
+      data: user,
+      message: `Modification réussi`,
+      status: StatusCodes.OK
     })
   } else {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR)

@@ -24,6 +24,9 @@ module.exports = db.define("users", {
 		},
 		user_password: {
 			type: Sequelize.TEXT
+		},
+		user_status: {
+			type: Sequelize.STRING
 		}
 	}, {
 		timestamps: false

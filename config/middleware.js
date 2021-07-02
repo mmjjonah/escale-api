@@ -1,8 +1,9 @@
 const jwt = require('jsonwebtoken');
+const {StatusCodes} = require("http-status-codes");
 
 const checkToken = (req, res, next) => {
     let token = req.headers['x-access-token'] || req.headers['authorization']; // Express headers are auto converted to lowercase
-    if (token.startsWith('Bearer ')) {
+    if (token && token.startsWith('Bearer ')) {
         // Remove Bearer from string
         token = token.slice(7, token.length);
     }
@@ -10,9 +11,9 @@ const checkToken = (req, res, next) => {
     if (token) {
         jwt.verify(token, process.env.TOKEN_KEY, (err, decoded) => {
             if (err) {
-                return res.json({
+                return res.status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED).json({
                     success: false,
-                    message: 'Token is not valid'
+                    message: 'Token invalide'
                 });
             } else {
                 req.decoded = decoded;
@@ -20,13 +21,13 @@ const checkToken = (req, res, next) => {
             }
         });
     } else {
-        return res.json({
+        return res.status(StatusCodes.NETWORK_AUTHENTICATION_REQUIRED).json({
             success: false,
-            message: 'Auth token is not supplied'
+            message: "Le token d'authentification n'est pas fourni"
         });
     }
 };
 
 module.exports = {
-    checkToken: checkToken
+    checkToken
 }

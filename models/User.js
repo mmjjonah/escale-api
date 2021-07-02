@@ -1,6 +1,6 @@
 "use strict"
 
-const {Sequelize} = require('sequelize')
+const Sequelize = require('sequelize')
 const db = require('../config/database')
 
 module.exports = db.define("users", {
@@ -16,6 +16,9 @@ module.exports = db.define("users", {
 			type: Sequelize.STRING
 		},
 		user_email: {
+			type: Sequelize.STRING
+		},
+		user_group: {
 			type: Sequelize.STRING
 		},
 		user_login: {

@@ -1,14 +1,16 @@
 "use strict"
 
 const express = require('express')
-const { Op } = require('sequelize')
-const User = require('../models/User')
+const {Op} = require('sequelize')
+const {User} = require('../models')
 const bcrypt = require('bcrypt')
-const {StatusCodes} = require("http-status-codes");
+const {StatusCodes} = require('http-status-codes');
+const {status} = require('../config/constant')
+const {checkToken} = require('../config/middleware')
 
 const router = express.Router()
 
-router.get('/', async (req, res) => {
+router.get('/', checkToken, async (req, res) => {
   let filter = {}
 
   const { q } = req.query
@@ -41,7 +43,7 @@ router.get('/', async (req, res) => {
   })
 })
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', checkToken, async (req, res) => {
   const { id } = req.params
   const user = await User.findByPk(id)
   let data = user.toJSON()
@@ -53,16 +55,18 @@ router.get('/:id', async (req, res) => {
   })
 })
 
-router.post('/', async (req, res) => {
-  const { user_lastname, user_firstname, user_email, user_login, user_password } = req.body
+router.post('/', checkToken,async (req, res) => {
+  const { user_lastname, user_firstname, user_email, user_group, user_login, user_password } = req.body
 
   const hashPassword = bcrypt.hashSync(user_password, 10)
 
   const userData = await User.build({
     user_lastname,
     user_firstname,
+    user_group,
     user_email,
     user_login,
+    user_status: status.ACTIVE,
     user_password: hashPassword
   })
 
@@ -74,20 +78,25 @@ router.post('/', async (req, res) => {
     delete data.user_password
     res.status(StatusCodes.CREATED).json({
       message: `Utilisateur ${user_lastname} ${user_firstname} enregistré`,
-      data
+      data,
+      status: StatusCodes.CREATED
     })
   } else {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR)
   }
 })
 
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', checkToken, async (req, res) => {
   const { id } = req.params
-  const cols = [ 'user_lastname', 'user_firstname', 'user_email', 'user_password', 'user_login', 'user_status' ]
+  const cols = [ 'user_lastname', 'user_firstname', 'user_email', 'user_password', 'user_group', 'user_login', 'user_status' ]
   let values = {}
   cols.map(col => {
     if (req.body[col]) {
-      values[col] = req.body[col]
+      if (col === 'user_password') {
+        values[col] = bcrypt.hashSync(req.body[col], 10)
+      } else {
+        values[col] = req.body[col]
+      }
     }
   })
 
@@ -108,7 +117,7 @@ router.patch('/:id', async (req, res) => {
   }
 })
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkToken, async (req, res) => {
   const { id } = req.params
   const user = await User.destroy({
     where: {

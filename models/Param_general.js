@@ -22,5 +22,6 @@ module.exports = db.define("param_general", {
 		type: Sequelize.INTEGER
 	}
 }, {
-	timestamps: false
+	timestamps: false,
+	underscored: true,
 })

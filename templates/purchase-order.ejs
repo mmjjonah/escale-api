@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Bon de commande</title>
+        <style>
+            body {
+                font-family: sans-serif;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 style="text-align: center">Bon de commande</h1>
+        <p>
+            <strong><u>NUMÉRO BC :</u></strong>
+            <span><%= command_id.toString().padStart(6, '0') %></span>
+        </p>
+        <p>
+            <strong><u>NOM / PRÉNOM :</u></strong>
+            <span><%= client.client_lastname %> <%= client.client_firstname %></span>
+        </p>
+        <p>
+            <strong><u>CONTACT :</u></strong>
+            <span><%= client.client_contact %></span>
+        </p>
+        <p>
+            <strong><u>LIVRAISON :</u></strong>
+            <span><%= command_date_livraison %></span>
+        </p>
+        <p>
+            <strong><u>NOMBRE DE GÂTEAU :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>NOMBRE DE PAX :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>ÉVÈNEMENT :</u></strong>
+            <span><%= command_evenement %></span>
+        </p>
+        <p>
+            <strong><u>TYPE DE GÂTEAU :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>FORME :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>DECORATION :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>MODÈLE :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>MESSAGE :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>OBSERVATIONS :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>LIVRAISON :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>MONTANT TOTAL :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>REMISE :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>ACOMPTE :</u></strong>
+            <span><%= command_montant_a_compte %></span>
+        </p>
+        <p>
+            <strong><u>RESTE À PAYER :</u></strong>
+            <span></span>
+        </p>
+        <p>
+            <strong><u>RETOUR CLIENT :</u></strong>
+            <span><%= command_retour_client %></span>
+        </p>
+
+    </body>
+</html>

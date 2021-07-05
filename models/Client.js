@@ -18,11 +18,18 @@ let Client = db.define("clients", {
 		client_contact: {
 			type: Sequelize.STRING(255)
 		},
+		client_sexe: {
+			type: Sequelize.STRING(1)
+		},
+		client_age: {
+			type: Sequelize.INTEGER
+		},
 	}, {
-		timestamps: false
+		timestamps: false,
+		underscored: true,
 	}
 )
 Client.associate = (models) => {
-	Client.hasMany(models.commands, {as: 'commands'})
+	Client.hasMany(models.Command, {as: 'commands', sourceKey: 'client_id', foreignKey: 'command_client_fk'})
 }
 module.exports = Client

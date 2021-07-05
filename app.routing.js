@@ -1,4 +1,4 @@
-const ROUTES = [
+module.exports = [
   {
     path: "/user",
     controller: "UserController"
@@ -11,6 +11,12 @@ const ROUTES = [
     path: "/param_gen",
     controller: "ParamGeneralController"
   },
+  {
+    path: "/command",
+    controller: "CommandController"
+  },
+  {
+    path: "/client",
+    controller: "ClientController"
+  },
 ]
-
-module.exports = ROUTES

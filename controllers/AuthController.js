@@ -20,14 +20,15 @@ router.post('/', async (req, res) => {
 			user_id: '',
 			user_login: '',
 			user_lastname: '',
-			user_firstname: ''
+			user_firstname: '',
+			user_group: ''
 		}
 		user = userData.toJSON()
 		if (bcrypt.compareSync(password, user.user_password)) {
-			const token = jwt.sign({user_id: user.user_id, user_login: user.user_login}, process.env.TOKEN_KEY, {
+			delete user.user_password
+			const token = jwt.sign(user, process.env.TOKEN_KEY, {
 				expiresIn: tokenExpiration
 			})
-			delete user.user_password
 
 			res.json({
 				data: {

@@ -1,0 +1,38 @@
+{
+  "client_lastname": "Maheriniaina",
+  "client_firstname": "Michaël Jonathan",
+  "client_contact": "034 52 222 58",
+  "client_age": 21,
+  "client_sexe": "M",
+  "command_date_livraison": "2021-07-03",
+  "command_evenement": "Anniversaire",
+  "command_montant_a_compte": 0,
+  "list_gateaux": [
+    {
+      "gateau_nb_pax": 5,
+      "gateau_form_param_fk": "1",
+      "gateau_type_param_fk": "5",
+      "gateau_decoration": "test",
+      "gateau_model": {},
+      "gateau_message": "Long vie",
+      "gateau_observation": "test",
+      "gateau_montant_unitaire": 3000,
+      "gateau_montant_total": 50000,
+      "form": "Rectangle",
+      "type": "Fruit"
+    },
+    {
+      "gateau_nb_pax": 6,
+      "gateau_form_param_fk": "2",
+      "gateau_type_param_fk": "6",
+      "gateau_decoration": "test",
+      "gateau_model": "",
+      "gateau_message": "test",
+      "gateau_observation": "test",
+      "gateau_montant_unitaire": 600,
+      "gateau_montant_total": 5000,
+      "form": "Triangle",
+      "type": "Chocolat"
+    }
+  ]
+}

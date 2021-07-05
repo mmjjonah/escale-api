@@ -55,7 +55,7 @@ router.get('/:id', checkToken, async (req, res) => {
   })
 })
 
-router.post('/', checkToken,async (req, res) => {
+router.post('/', checkToken, async (req, res) => {
   const { user_lastname, user_firstname, user_email, user_group, user_login, user_password } = req.body
 
   const hashPassword = bcrypt.hashSync(user_password, 10)

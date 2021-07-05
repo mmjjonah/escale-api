@@ -37,7 +37,7 @@ let Gateau = db.define("gateaux", {
 				key: 'command_id'
 			}
 		},
-		user_form_param_fk: {
+		gateau_form_param_fk: {
 			type: Sequelize.INTEGER,
 			reference: {
 				model: 'Param_generals',
@@ -52,12 +52,14 @@ let Gateau = db.define("gateaux", {
 			}
 		},
 	}, {
-		timestamps: false
+		timestamps: false,
+		freezeTableName: true,
+		underscored: true,
 	}
 )
 Gateau.associate = (models) => {
-	Gateau.belongsTo(models.param_generals, {foreignKey: 'user_form_param_fk', as: 'FORME_GATEAU'})
-	Gateau.belongsTo(models.param_generals, {foreignKey: 'gateau_type_param_fk', as: 'TYPE_GATEAU'})
-	Gateau.belongsTo(models.commands, {foreignKey: 'gateau_command_fk', as: 'command'})
+	Gateau.belongsTo(models.Param_general, {foreignKey: 'gateau_form_param_fk', as: 'forme'})
+	Gateau.belongsTo(models.Param_general, {foreignKey: 'gateau_type_param_fk', as: 'type'})
+	Gateau.belongsTo(models.Command, {foreignKey: 'gateau_command_fk', as: 'command'})
 }
 module.exports = Gateau

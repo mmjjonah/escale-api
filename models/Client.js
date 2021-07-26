@@ -30,6 +30,6 @@ let Client = db.define("clients", {
 	}
 )
 Client.associate = (models) => {
-	Client.hasMany(models.Command, {as: 'commands', sourceKey: 'client_id', foreignKey: 'command_client_fk'})
+	Client.hasOne(models.Command, {as: 'command', sourceKey: 'client_id', foreignKey: 'command_client_fk'})
 }
 module.exports = Client

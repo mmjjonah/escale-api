@@ -24,6 +24,18 @@ let Gateau = db.define("gateaux", {
 		gateau_message: {
 			type: Sequelize.STRING(255)
 		},
+		gateau_arome_special: {
+			type: Sequelize.STRING(255)
+		},
+		gateau_piece_montee: {
+			type: Sequelize.INTEGER
+		},
+		gateau_layercake: {
+			type: Sequelize.INTEGER
+		},
+		gateau_dripcake: {
+			type: Sequelize.INTEGER
+		},
 		gateau_montant_unitaire: {
 			type: Sequelize.INTEGER
 		},

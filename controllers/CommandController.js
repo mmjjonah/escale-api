@@ -103,6 +103,10 @@ router.put('/', checkToken, async (req, res) => {
 				gateau_type_param_fk: gateau.gateau_type_param_fk,
 				gateau_decoration: gateau.gateau_decoration,
 				gateau_message: gateau.gateau_message,
+				gateau_arome_special: gateau.gateau_arome_special,
+				gateau_piece_montee: gateau.gateau_piece_montee,
+				gateau_layercake: gateau.gateau_layercake,
+				gateau_dripcake: gateau.gateau_dripcake,
 				gateau_observation: gateau.gateau_observation,
 				gateau_montant_unitaire: gateau.gateau_montant_unitaire,
 				gateau_montant_total: gateau.gateau_montant_total,
@@ -213,6 +217,19 @@ router.get('/new-id', checkToken, async (req, res) => {
 router.delete('/:id', checkToken, async (req, res) => {
 	try {
 		const command_id = req.params.id
+		const client_id = (await Command.findOne({
+			where: {
+				command_id
+			},
+			attributes: [ 'command_client_fk' ]
+		})).command_client_fk
+
+		await Client.destroy({
+			where: {
+				client_id
+			}
+		})
+
 		await Command.destroy({
 			where: {
 				command_id

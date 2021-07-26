@@ -29,6 +29,7 @@ router.put('/', checkToken, async (req, res) => {
 			client_sexe,
 			command_id,
 			command_date_livraison,
+			command_heure_livraison,
 			command_lieu_livraison,
 			command_evenement,
 			command_montant_a_compte,
@@ -59,7 +60,7 @@ router.put('/', checkToken, async (req, res) => {
 		let command = {
 			command_id,
 			command_lieu_livraison,
-			command_date_livraison,
+			command_date_livraison: command_date_livraison + ' ' + command_heure_livraison,
 			command_evenement,
 			command_montant_a_compte,
 			command_client_fk: client.client_id,
@@ -107,9 +108,9 @@ router.put('/', checkToken, async (req, res) => {
 				gateau_montant_total: gateau.gateau_montant_total,
 				gateau_command_fk: command.command_id
 			}
-
-			if (gateau.gateau_id.toString().includes('new__')) {
-				const gateauData = Gateau.build(_gateau)
+			if (isNaN(gateau.gateau_id)) {
+				_gateau.gateau_id = 0
+				const gateauData = Gategateau_modelau.build(_gateau)
 				_gateau = await gateauData.save()
 
 			} else {
@@ -154,8 +155,15 @@ router.put('/', checkToken, async (req, res) => {
 })
 
 router.get('/', checkToken, async (req, res) => {
+	const { command_type } = req.query
+	let where = {}
+	if (command_type)
+		where = {...where, command_type }
 	try {
 		const command = await Command.findAll({
+			where: {
+				...where
+			},
 			include: [
 				{
 					model: Client,
@@ -183,6 +191,18 @@ router.get('/', checkToken, async (req, res) => {
 		res.json({
 			message: 'Liste des commandes',
 			data: command,
+			status: StatusCodes.OK
+		})
+	} catch (e) {
+		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e)
+	}
+})
+
+router.get('/new-id', checkToken, async (req, res) => {
+	try {
+		res.json({
+			message: 'New command id',
+			data: parseInt(await Command.max('command_id'), 10) + 1,
 			status: StatusCodes.OK
 		})
 	} catch (e) {
@@ -223,50 +243,54 @@ router.post('/feedback', checkToken, async (req, res) => {
 })
 
 router.get('/purchase-order/:id', async (req, res) => {
-	const command_id = req.params.id
-	const commandRes = await Command.findOne({
-		where: { command_id },
-		include: [
-			{
-				model: Client,
-				as: 'client',
-			},
-			{
-				model: Gateau,
-				as: 'gateaux',
-				include: [
-					{
-						model: Param_general,
-						as: 'forme',
-						attributes: ['param_description', 'param_id', 'param_code']
-					},
-					{
-						model: Param_general,
-						as: 'type',
-						attributes: ['param_description', 'param_id', 'param_code']
-					},
-				]
-			}
-		]
-	})
-	const command = commandRes.toJSON()
-	
-	command.command_date_livraison = moment(new Date(command.command_date_livraison).getTime()).format('DD MMMM YYYY')
-	const html = ejs.render(readFile('templates/purchase-order.ejs', {encoding: 'utf8'}), command)
+	try {
+		const command_id = req.params.id
+		const commandRes = await Command.findOne({
+			where: { command_id },
+			include: [
+				{
+					model: Client,
+					as: 'client',
+				},
+				{
+					model: Gateau,
+					as: 'gateaux',
+					include: [
+						{
+							model: Param_general,
+							as: 'forme',
+							attributes: ['param_description', 'param_id', 'param_code']
+						},
+						{
+							model: Param_general,
+							as: 'type',
+							attributes: ['param_description', 'param_id', 'param_code']
+						},
+					]
+				}
+			]
+		})
+		const command = commandRes.toJSON()
 
-	const data = await htmlToPdf(html, {
-		output: 'B'
-	})
+		command.command_date_livraison = moment(new Date(command.command_date_livraison).getTime()).format('DD MMMM YYYY')
+		const html = ejs.render(readFile('templates/purchase-order.ejs', {encoding: 'utf8'}), command)
 
-	res.json({
-		message: 'Téléchargement du bon de commande',
-		data,
-		status: StatusCodes.OK
-	})
+		const data = await htmlToPdf(html, {
+			output: 'B'
+		})
+
+		res.json({
+			message: 'Téléchargement du bon de commande',
+			data,
+			status: StatusCodes.OK
+		})
+	} catch (e) {
+		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e)
+	}
 })
 
 router.get('/gateau_model/:gateau_id', async (req, res) => {
-	try {
+	// try {
 		const {gateau_id} = req.params
 		const gateau = (await Gateau.findByPk(gateau_id)).toJSON()
 		const data = fs.readFileSync(gateau.gateau_model, {encoding: 'base64'})
@@ -275,9 +299,9 @@ router.get('/gateau_model/:gateau_id', async (req, res) => {
 			data,
 			status: StatusCodes.OK
 		})
-	} catch (e) {
-		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e)
-	}
+	// } catch (e) {
+	// 	res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e)
+	// }
 })
 
 module.exports = router

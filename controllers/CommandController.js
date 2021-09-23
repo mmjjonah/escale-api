@@ -321,4 +321,9 @@ router.get('/gateau_model/:gateau_id', async (req, res) => {
 	// }
 })
 
+router.get('/commands_dashboard', async (req, res) => {
+	const result = Command.query(`SELECT ( SELECT COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 2 DAY) ) FROM commands LIMIT 1 ) as lundi_dernier FROM commands LIMIT 1`)
+	return result;
+})
+
 module.exports = router

@@ -5,6 +5,7 @@ const {Op} = require("sequelize");
 const {StatusCodes} = require("http-status-codes");
 const {checkToken} = require("../config/middleware");
 const {Client, Command, Gateau, Param_general} = require('../models')
+const db = require('../config/database')
 const {htmlToPdf} = require('../helpers/pdfHelper')
 const ejs = require('ejs')
 const readFile = require('fs').readFileSync
@@ -321,9 +322,53 @@ router.get('/gateau_model/:gateau_id', async (req, res) => {
 	// }
 })
 
-router.get('/commands_dashboard', async (req, res) => {
-	const result = Command.query(`SELECT ( SELECT COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 2 DAY) ) FROM commands LIMIT 1 ) as lundi_dernier FROM commands LIMIT 1`)
-	return result;
+router.get('/dashboard', async (req, res) => {
+	let dataCommand = await db.query(`
+		SELECT ( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 2 DAY) ) 
+			FROM commands LIMIT 1 
+		) as lundi_dernier,
+		( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 3 DAY) ) 
+			FROM commands LIMIT 1 
+		) as mardi_dernier,
+		( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 4 DAY) ) 
+			FROM commands LIMIT 1 
+		) as mercredi_dernier,
+		( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 5 DAY) ) 
+			FROM commands LIMIT 1 
+		) as jeudi_dernier,
+		( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 6 DAY) ) 
+			FROM commands LIMIT 1 
+		) as vendredi_dernier,
+		( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 7 DAY) ) 
+			FROM commands LIMIT 1 
+		) as samedi_dernier,
+		( 
+			SELECT 
+				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 8 DAY) ) 
+			FROM commands LIMIT 1 
+		) as dimanche_dernier
+	`)
+	let data = {}
+
+	data.command = JSON.parse(JSON.stringify(dataCommand))[0][0]
+	console.log(data.command);
+	res.json({
+		message: 'dashboard',
+		data,
+		status: StatusCodes.OK
+	})
 })
 
 module.exports = router

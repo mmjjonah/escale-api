@@ -45,3 +45,8 @@ alter table gateaux
 alter table gateaux
     add constraint gateaux_command_fk
         foreign key (gateau_command_fk) references commands (command_id);
+
+-- 04/09/2021 Michaël Jonathan
+ALTER TABLE `clients` ADD `created_at` DATETIME NULL , ADD `updated_at` DATETIME NULL;
+ALTER TABLE `gateaux` ADD `created_at` DATETIME NULL , ADD `updated_at` DATETIME NULL;
+ALTER TABLE `users` ADD `created_at` DATETIME NULL , ADD `updated_at` DATETIME NULL;

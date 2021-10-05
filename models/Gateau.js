@@ -64,7 +64,7 @@ let Gateau = db.define("gateaux", {
 			}
 		},
 	}, {
-		timestamps: false,
+		timestamps: true,
 		freezeTableName: true,
 		underscored: true,
 	}

@@ -32,7 +32,7 @@ module.exports = db.define("users", {
 			type: Sequelize.STRING
 		}
 	}, {
-		timestamps: false,
+		timestamps: true,
 		underscored: true,
 	}
 )

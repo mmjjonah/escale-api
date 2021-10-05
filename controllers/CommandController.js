@@ -12,6 +12,7 @@ const readFile = require('fs').readFileSync
 const moment = require('moment')
 const fs = require('fs')
 const {dataURLtoFile} = require('../helpers/fileHelper')
+const {getDates, castDateForDb} = require('../helpers/dateHelper')
 moment.locale('fr');
 
 const router = express.Router()
@@ -322,50 +323,23 @@ router.get('/gateau_model/:gateau_id', async (req, res) => {
 	// }
 })
 
-router.get('/dashboard', async (req, res) => {
-	let dataCommand = await db.query(`
-		SELECT ( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 2 DAY) ) 
-			FROM commands LIMIT 1 
-		) as lundi_dernier,
-		( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 3 DAY) ) 
-			FROM commands LIMIT 1 
-		) as mardi_dernier,
-		( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 4 DAY) ) 
-			FROM commands LIMIT 1 
-		) as mercredi_dernier,
-		( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 5 DAY) ) 
-			FROM commands LIMIT 1 
-		) as jeudi_dernier,
-		( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 6 DAY) ) 
-			FROM commands LIMIT 1 
-		) as vendredi_dernier,
-		( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 7 DAY) ) 
-			FROM commands LIMIT 1 
-		) as samedi_dernier,
-		( 
-			SELECT 
-				COUNT( DATE_SUB(DATE_SUB(NOW(), INTERVAL 7 DAY), INTERVAL DAYOFWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY)) - 8 DAY) ) 
-			FROM commands LIMIT 1 
-		) as dimanche_dernier
-	`)
-	let data = {}
+router.get('/chart', async (req, res) => {
+	let { date_du, date_au } = req.query
+	let data = []
 
-	data.command = JSON.parse(JSON.stringify(dataCommand))[0][0]
-	console.log(data.command);
+	let dates = getDates(new Date(date_du), new Date(date_au)).map(d => castDateForDb(d))
+
+	for (let i = 0; i < dates.length; i++) {
+		const date = dates[i];
+
+		let {count} = (await db.query(`SELECT count(*) AS count FROM commands AS commands WHERE DATE(commands.created_at) = '${date}'`))[0][0]
+		data = [...data, {
+			date, count
+		}]
+	}
+
 	res.json({
-		message: 'dashboard',
+		message: 'Chart command',
 		data,
 		status: StatusCodes.OK
 	})

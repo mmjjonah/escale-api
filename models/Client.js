@@ -25,7 +25,7 @@ let Client = db.define("clients", {
 			type: Sequelize.INTEGER
 		},
 	}, {
-		timestamps: false,
+		timestamps: true,
 		underscored: true,
 	}
 )

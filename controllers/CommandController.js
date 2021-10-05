@@ -116,7 +116,7 @@ router.put('/', checkToken, async (req, res) => {
 			}
 			if (isNaN(gateau.gateau_id)) {
 				_gateau.gateau_id = 0
-				const gateauData = Gategateau_modelau.build(_gateau)
+				const gateauData = Gateau.build(_gateau)
 				_gateau = await gateauData.save()
 
 			} else {

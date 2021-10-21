@@ -7,86 +7,92 @@
             body {
                 font-family: sans-serif;
             }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            td {
+                border: 1px solid black;
+            }
         </style>
     </head>
     <body>
         <h1 style="text-align: center">Bon de commande</h1>
-        <p>
-            <strong><u>NUMÉRO BC :</u></strong>
-            <span><%= command_id.toString().padStart(6, '0') %></span>
-        </p>
-        <p>
-            <strong><u>NOM / PRÉNOM :</u></strong>
-            <span><%= client.client_lastname %> <%= client.client_firstname %></span>
-        </p>
-        <p>
-            <strong><u>CONTACT :</u></strong>
-            <span><%= client.client_contact %></span>
-        </p>
-        <p>
-            <strong><u>LIVRAISON :</u></strong>
-            <span><%= command_date_livraison %></span>
-        </p>
-        <p>
-            <strong><u>NOMBRE DE GÂTEAU :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>NOMBRE DE PAX :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>ÉVÈNEMENT :</u></strong>
-            <span><%= command_evenement %></span>
-        </p>
-        <p>
-            <strong><u>TYPE DE GÂTEAU :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>FORME :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>DECORATION :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>MODÈLE :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>MESSAGE :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>OBSERVATIONS :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>LIVRAISON :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>MONTANT TOTAL :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>REMISE :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>ACOMPTE :</u></strong>
-            <span><%= command_montant_a_compte %></span>
-        </p>
-        <p>
-            <strong><u>RESTE À PAYER :</u></strong>
-            <span></span>
-        </p>
-        <p>
-            <strong><u>RETOUR CLIENT :</u></strong>
-            <span><%= command_retour_client %></span>
-        </p>
+        <table>
+        <tr>
+            <td>
+                <p>
+                    <strong><u>BC N° :</u></strong>
+                    <span><%= command_id.toString().padStart(5, '0') %></span>
+                </p>
+                <p>
+                    <strong><u>DATE RECUP :</u></strong>
+                    <span><%= command_date_livraison %></span>
+                </p>
+                <p>
+                    <strong><u>NOM / PRÉNOM :</u></strong>
+                    <span><%= client.client_lastname %> <%= client.client_firstname %></span>
+                </p>
+                <p>
+                    <strong><u>CONTACT (Tel/Fb) :</u></strong>
+                    <span><%= client.client_contact %></span>
+                </p>
+                <p>
+                    <strong><u>NOMBRE DE PAX :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>TYPE DE GÂTEAU :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>FORME :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>DECORATION :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>MESSAGE :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>AZIME :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>MODÈLE :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>SEXE / ÂGE :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>AUTRE :</u></strong>
+                    <span></span>
+                </p>
+                <p>
+                    <strong><u>OBSERVATION :</u></strong>
+                    <span></span>
+                </p>
+            </td>
 
+            <td>
+                <p>
+                    <strong><u>FACTURE N° :</u></strong>
+                    <span><%= command_id.toString().padStart(5, '0') %></span>
+                </p>
+                 <p>
+                    <strong><u>DATE :</u></strong>
+                    <span><%= command_date_livraison %></span>
+                </p>
+                 <p>
+                    <strong><u>DATE/HEURE RECUP :</u></strong>
+                    <span><%= command_date_livraison %></span>
+                </p>
+            </td>
+        </tr>
     </body>
 </html>

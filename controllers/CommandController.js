@@ -8,9 +8,9 @@ const {Client, Command, Gateau, Param_general} = require('../models')
 const db = require('../config/database')
 const {htmlToPdf} = require('../helpers/pdfHelper')
 const ejs = require('ejs')
-const readFile = require('fs').readFileSync
-const moment = require('moment')
 const fs = require('fs')
+const readFile = fs.readFileSync
+const moment = require('moment')
 const {dataURLtoFile} = require('../helpers/fileHelper')
 const {getDates, castDateForDb} = require('../helpers/dateHelper')
 moment.locale('fr');
@@ -324,22 +324,38 @@ router.get('/gateau_model/:gateau_id', async (req, res) => {
 })
 
 router.get('/chart', async (req, res) => {
-	let { date_du, date_au } = req.query
+	let { date_du, date_au, type } = req.query
 	let data = []
-
+	const select = type === 'paiements' ? 'sum(gateaux.gateau_montant_total)' : 'count(*)'
+	type = type === 'paiements' ? 'gateaux' : type
 	let dates = getDates(new Date(date_du), new Date(date_au)).map(d => castDateForDb(d))
 
 	for (let i = 0; i < dates.length; i++) {
 		const date = dates[i];
 
-		let {count} = (await db.query(`SELECT count(*) AS count FROM commands AS commands WHERE DATE(commands.created_at) = '${date}'`))[0][0]
+		let {count} = (await db.query(`SELECT ${select} AS count FROM ${type} AS ${type} WHERE DATE(${type}.created_at) = '${date}'`))[0][0]
 		data = [...data, {
 			date, count
 		}]
 	}
 
 	res.json({
-		message: 'Chart command',
+		message: 'Results',
+		data,
+		status: StatusCodes.OK
+	})
+})
+
+router.get('/day-data', checkToken, async (req, res) => {
+	let data = {}
+
+	data.commandDay = (await db.query(`SELECT count(*) AS count FROM commands WHERE DATE(commands.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	data.gateauDay = (await db.query(`SELECT count(*) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	data.clientDay = (await db.query(`SELECT count(*) AS count FROM clients WHERE DATE(clients.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	data.montantDay = (await db.query(`SELECT sum(gateaux.gateau_montant_total) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+
+	res.json({
+		message: 'Results',
 		data,
 		status: StatusCodes.OK
 	})

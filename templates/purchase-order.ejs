@@ -13,86 +13,110 @@
             }
             td {
                 border: 1px solid black;
+                padding: 10px;
             }
         </style>
     </head>
     <body>
         <h1 style="text-align: center">Bon de commande</h1>
         <table>
-        <tr>
-            <td>
-                <p>
-                    <strong><u>BC N° :</u></strong>
-                    <span><%= command_id.toString().padStart(5, '0') %></span>
-                </p>
-                <p>
-                    <strong><u>DATE RECUP :</u></strong>
-                    <span><%= command_date_livraison %></span>
-                </p>
-                <p>
-                    <strong><u>NOM / PRÉNOM :</u></strong>
-                    <span><%= client.client_lastname %> <%= client.client_firstname %></span>
-                </p>
-                <p>
-                    <strong><u>CONTACT (Tel/Fb) :</u></strong>
-                    <span><%= client.client_contact %></span>
-                </p>
-                <p>
-                    <strong><u>NOMBRE DE PAX :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>TYPE DE GÂTEAU :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>FORME :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>DECORATION :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>MESSAGE :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>AZIME :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>MODÈLE :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>SEXE / ÂGE :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>AUTRE :</u></strong>
-                    <span></span>
-                </p>
-                <p>
-                    <strong><u>OBSERVATION :</u></strong>
-                    <span></span>
-                </p>
-            </td>
-
-            <td>
-                <p>
-                    <strong><u>FACTURE N° :</u></strong>
-                    <span><%= command_id.toString().padStart(5, '0') %></span>
-                </p>
-                 <p>
-                    <strong><u>DATE :</u></strong>
-                    <span><%= command_date_livraison %></span>
-                </p>
-                 <p>
-                    <strong><u>DATE/HEURE RECUP :</u></strong>
-                    <span><%= command_date_livraison %></span>
-                </p>
-            </td>
-        </tr>
+            <tr>
+                <td>BC N°</td>
+                <td><%= numero %></td>
+                <td>FACTURE N°</td>
+                <td><%= numero %></td>
+            </tr>
+            <tr>
+                <td>DATE RECUP</td>
+                <td><%= date_recup %></td>
+                <td>DATE</td>
+                <td><%= date_recup %></td>
+            </tr>
+            <tr>
+                <td>HEURE</td>
+                <td><%= heure_recup %></td>
+                <td>DATE / HEURE RECUP</td>
+                <td><%= date_recup %> <%= heure_recup %></td>
+            </tr>
+            <tr>
+                <td>NOM</td>
+                <td><%= nom %></td>
+                <td>NOM</td>
+                <td><%= nom %></td>
+            </tr>
+            <tr>
+                <td>CONTACT (Tel / Fb)</td>
+                <td><%= contact %></td>
+                <td colspan="2" rowspan="8" style="padding: 0;margin-top: 0;">
+                    <table>
+                        <tr>
+                            <td>QTE (PAX)</td>
+                            <td>DESIGNATION</td>
+                            <td>PU</td>
+                            <td>MONTANT</td>
+                        </tr>
+                        <% gateaux.forEach(gateau => { %>
+                            <tr>
+                                <td><%= gateau.gateau_nb_pax %></td>
+                                <td><%= gateau.gateau_observation %></td>
+                                <td><%= gateau.gateau_montant_unitaire %></td>
+                                <td><%= gateau.gateau_montant_total %></td>
+                            </tr>
+                        <% }); %>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td>NOMBRE PAX</td>
+                <td><%= nbr_pax %></td>
+            </tr>
+            <tr>
+                <td>TYPE</td>
+                <td><%= type %></td>
+            </tr>
+            <tr>
+                <td>FORME</td>
+                <td><%= forme %></td>
+            </tr>
+            <tr>
+                <td>THEME / COULEUR</td>
+                <td><%= couleur %></td>
+            </tr>
+            <tr>
+                <td>MESSAGE</td>
+                <td><%= message %></td>
+            </tr>
+            <tr>
+                <td>AZYME</td>
+                <td><%= azyme %></td>
+            </tr>
+            <tr>
+                <td>MODELE</td>
+                <td><%= modele %></td>
+            </tr>
+            <tr>
+                <td>SEXE / ÂGE</td>
+                <td><%= sexe %> / <%= age %> ans</td>
+                <td>MONTANT TOTAL</td>
+                <td><%= montant_total %></td>
+            </tr>
+            <tr>
+                <td>AUTRE</td>
+                <td><%= autre %></td>
+                <td>AVANCE</td>
+                <td><%= avance %></td>
+            </tr>
+            <tr>
+                <td>OBSERVATION</td>
+                <td><%= observation %></td>
+                <td>RESTE A PAYER</td>
+                <td><%= reste %></td>
+            </tr>
+        </table>
+        <div style="display: flex;flex-wrap: wrap;">
+            <% gateaux.forEach(gateau => { %>
+                <img src="<%= gateau.gateau_model %>" width="300">
+            <% }); %>
+        </div>
     </body>
 </html>

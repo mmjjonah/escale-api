@@ -8,9 +8,9 @@ const {Client, Command, Gateau, Param_general} = require('../models')
 const db = require('../config/database')
 const {htmlToPdf} = require('../helpers/pdfHelper')
 const ejs = require('ejs')
-const readFile = require('fs').readFileSync
-const moment = require('moment')
 const fs = require('fs')
+const readFile = fs.readFileSync
+const moment = require('moment')
 const {dataURLtoFile} = require('../helpers/fileHelper')
 const {getDates, castDateForDb} = require('../helpers/dateHelper')
 moment.locale('fr');
@@ -131,6 +131,9 @@ router.put('/', checkToken, async (req, res) => {
 			if (gateau.gateau_model && gateau.gateau_model.startsWith('data:')) {
 				const commandPath = `uploads/command_${command_id}`
 				if (!fs.existsSync(commandPath)) {
+					if (!fs.existsSync('uploads')) {
+						fs.mkdirSync('uploads')
+					}
 					fs.mkdirSync(commandPath)
 				}
 				const filePath = dataURLtoFile(gateau.gateau_model, commandPath, _gateau.gateau_id.toString().padStart(10, '0'))
@@ -262,7 +265,7 @@ router.post('/feedback', checkToken, async (req, res) => {
 })
 
 router.get('/purchase-order/:id', async (req, res) => {
-	try {
+	// try {
 		const command_id = req.params.id
 		const commandRes = await Command.findOne({
 			where: { command_id },
@@ -291,11 +294,37 @@ router.get('/purchase-order/:id', async (req, res) => {
 		})
 		const command = commandRes.toJSON()
 
-		command.command_date_livraison = moment(new Date(command.command_date_livraison).getTime()).format('DD MMMM YYYY')
-		const html = ejs.render(readFile('templates/purchase-order.ejs', {encoding: 'utf8'}), command)
+		let printData = {}
+		printData.numero = command.command_id.toString().padStart(5, '0')
+		printData.date_recup = moment(new Date().getTime()).format('DD MMMM YYYY')
+		printData.heure_recup = moment(new Date().getTime()).format('hh:mm')
+		printData.nom = command.client.client_lastname +' '+ command.client.client_firstname
+		printData.type = command.gateaux.map(g => g.type.param_description).join('\n')
+		printData.forme = command.gateaux.map(g => g.forme.param_description).join('\n')
+		printData.nbr_pax = command.gateaux.reduce((acc, g) => acc + parseInt(g.gateau_nb_pax), 0)
+		printData.couleur = command.gateaux.map(g => g.gateau_decoration).join('\n')
+		printData.message = command.gateaux.map(g => g.gateau_message).join('\n')
+		printData.azyme = ''
+		printData.modele = command.gateaux.map(g => g.gateau_model).join('\n')
+		printData.sexe = command.client.client_sexe
+		printData.age = command.client.client_age
+		printData.autre = ''
+		printData.contact = command.client.client_contact
+		printData.observation = command.command_retour_client
+		printData.montant_total = command.gateaux.reduce((acc, g) => acc + parseInt(g.gateau_montant_total), 0)
+		printData.avance = command.command_montant_a_compte
+		printData.reste = printData.montant_total - parseInt(command.command_montant_a_compte)
+		printData.gateaux = command.gateaux.map(g => {
+			return {
+				...g,
+				gateau_model: 'data:image/png;base64,' + fs.readFileSync(g.gateau_model, {encoding: 'base64'})
+			}
+		})
+
+		const html = ejs.render(readFile('templates/purchase-order.ejs', {encoding: 'utf8'}), printData)
 
 		const data = await htmlToPdf(html, {
-			output: 'B'
+			output: 'B',
 		})
 
 		res.json({
@@ -303,9 +332,9 @@ router.get('/purchase-order/:id', async (req, res) => {
 			data,
 			status: StatusCodes.OK
 		})
-	} catch (e) {
-		res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e)
-	}
+	// } catch (e) {
+	// 	res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e)
+	// }
 })
 
 router.get('/gateau_model/:gateau_id', async (req, res) => {
@@ -324,22 +353,38 @@ router.get('/gateau_model/:gateau_id', async (req, res) => {
 })
 
 router.get('/chart', async (req, res) => {
-	let { date_du, date_au } = req.query
+	let { date_du, date_au, type } = req.query
 	let data = []
-
+	const select = type === 'paiements' ? 'sum(gateaux.gateau_montant_total)' : 'count(*)'
+	type = type === 'paiements' ? 'gateaux' : type
 	let dates = getDates(new Date(date_du), new Date(date_au)).map(d => castDateForDb(d))
 
 	for (let i = 0; i < dates.length; i++) {
 		const date = dates[i];
 
-		let {count} = (await db.query(`SELECT count(*) AS count FROM commands AS commands WHERE DATE(commands.created_at) = '${date}'`))[0][0]
+		let {count} = (await db.query(`SELECT ${select} AS count FROM ${type} AS ${type} WHERE DATE(${type}.created_at) = '${date}'`))[0][0]
 		data = [...data, {
 			date, count
 		}]
 	}
 
 	res.json({
-		message: 'Chart command',
+		message: 'Results',
+		data,
+		status: StatusCodes.OK
+	})
+})
+
+router.get('/day-data', checkToken, async (req, res) => {
+	let data = {}
+
+	data.commandDay = (await db.query(`SELECT count(*) AS count FROM commands WHERE DATE(commands.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	data.gateauDay = (await db.query(`SELECT count(*) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	data.clientDay = (await db.query(`SELECT count(*) AS count FROM clients WHERE DATE(clients.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	data.montantDay = (await db.query(`SELECT sum(gateaux.gateau_montant_total) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+
+	res.json({
+		message: 'Results',
 		data,
 		status: StatusCodes.OK
 	})

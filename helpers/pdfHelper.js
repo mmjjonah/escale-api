@@ -4,11 +4,12 @@ const fs = require("fs");
 
 function htmlToPdf(htmlContent, options = {
 	path: 'uploads/',
-	output: 'B' // 'F' (File), 'B' (Buffer), 'D' (Download)
+	output: 'B', // 'F' (File), 'B' (Buffer), 'D' (Download)
+	format: 'A4'
 }) {
 	return new Promise(((resolve, reject) => {
 		const pdfOptions = {
-			format: 'A4',
+			format: options.format,
 			border: {
 				top: "10mm",
 				right: "15mm",

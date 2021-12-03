@@ -325,6 +325,7 @@ router.get('/purchase-order/:id', async (req, res) => {
 
 		const data = await htmlToPdf(html, {
 			output: 'B',
+			format: 'A5'
 		})
 
 		res.json({

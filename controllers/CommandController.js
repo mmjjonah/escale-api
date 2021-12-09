@@ -1,6 +1,7 @@
 "use strict"
 
 const express = require('express')
+const path = require('path')
 const {Op} = require("sequelize");
 const {StatusCodes} = require("http-status-codes");
 const {checkToken} = require("../config/middleware");
@@ -317,7 +318,7 @@ router.get('/purchase-order/:id', async (req, res) => {
 		printData.gateaux = command.gateaux.map(g => {
 			return {
 				...g,
-				gateau_model: 'data:image/png;base64,' + fs.readFileSync(g.gateau_model, {encoding: 'base64'})
+				gateau_model: g.gateau_model !== '' && g.gateau_model ? 'data:image/png;base64,' + fs.readFileSync(path.resolve(g.gateau_model), {encoding: 'base64'}) : ''
 			}
 		})
 

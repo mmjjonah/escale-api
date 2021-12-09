@@ -11,10 +11,10 @@ function htmlToPdf(htmlContent, options = {
 		const pdfOptions = {
 			format: options.format,
 			border: {
-				top: "10mm",
-				right: "15mm",
-				bottom: "10mm",
-				left: "15mm"
+				top: "4mm",
+				right: "6mm",
+				bottom: "4mm",
+				left: "6mm"
 			},
 		};
 

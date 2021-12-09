@@ -13,7 +13,8 @@
             }
             td {
                 border: 1px solid black;
-                padding: 10px;
+                padding: 3px;
+                font-size: 10px;
             }
         </style>
     </head>
@@ -42,7 +43,7 @@
                 <td>NOM</td>
                 <td><%= nom %></td>
                 <td>NOM</td>
-                <td><%= nom %></td>
+                <td><%= nom %></td>r
             </tr>
             <tr>
                 <td>CONTACT (Tel / Fb)</td>
@@ -115,7 +116,7 @@
         </table>
         <div style="display: flex;flex-wrap: wrap;">
             <% gateaux.forEach(gateau => { %>
-                <img src="<%= gateau.gateau_model %>" width="300">
+                <img src="<%= gateau.gateau_model %>" width="200">
             <% }); %>
         </div>
     </body>

@@ -35,6 +35,8 @@ router.put('/', checkToken, async (req, res) => {
 			command_heure_livraison,
 			command_lieu_livraison,
 			command_evenement,
+			command_accessoire,
+			command_montant_reduction,
 			command_montant_a_compte,
 			gateaux
 		} = req.body
@@ -65,6 +67,8 @@ router.put('/', checkToken, async (req, res) => {
 			command_lieu_livraison,
 			command_date_livraison: command_date_livraison + ' ' + command_heure_livraison,
 			command_evenement,
+			command_accessoire,
+			command_montant_reduction,
 			command_montant_a_compte,
 			command_client_fk: client.client_id,
 			command_user_fk: user.user_id
@@ -89,7 +93,7 @@ router.put('/', checkToken, async (req, res) => {
 				[Op.and]: {
 					gateau_id: {
 						[Op.notIn] : gateaux.map((gateau) => {
-							return gateau.gateau_id
+							return !`${gateau.gateau_id}`.includes('new') ? gateau.gateau_id : -1
 						})
 					},
 					gateau_command_fk: command.command_id
@@ -300,8 +304,8 @@ router.get('/purchase-order/:id', async (req, res) => {
 		printData.date_recup = moment(new Date().getTime()).format('DD MMMM YYYY')
 		printData.heure_recup = moment(new Date().getTime()).format('hh:mm')
 		printData.nom = command.client.client_lastname +' '+ command.client.client_firstname
-		printData.type = command.gateaux.map(g => g.type.param_description).join('\n')
-		printData.forme = command.gateaux.map(g => g.forme.param_description).join('\n')
+		printData.type = command.gateaux.map(g => g.type ? g.type.param_description : '').join('\n')
+		printData.forme = command.gateaux.map(g => g.forme ? g.forme.param_description : '').join('\n')
 		printData.nbr_pax = command.gateaux.reduce((acc, g) => acc + parseInt(g.gateau_nb_pax), 0)
 		printData.couleur = command.gateaux.map(g => g.gateau_decoration).join('\n')
 		printData.message = command.gateaux.map(g => g.gateau_message).join('\n')

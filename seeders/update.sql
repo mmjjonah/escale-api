@@ -50,3 +50,7 @@ alter table gateaux
 ALTER TABLE `clients` ADD `created_at` DATETIME NULL , ADD `updated_at` DATETIME NULL;
 ALTER TABLE `gateaux` ADD `created_at` DATETIME NULL , ADD `updated_at` DATETIME NULL;
 ALTER TABLE `users` ADD `created_at` DATETIME NULL , ADD `updated_at` DATETIME NULL;
+
+-- 19/12/2021 Michaël Jonathan
+ALTER TABLE `commands` ADD `command_montant_reduction` INT NULL AFTER `command_montant_a_compte`;
+ALTER TABLE `commands` ADD `command_accessoire` TEXT NULL AFTER `command_retour_client`;

@@ -51,6 +51,7 @@ let Gateau = db.define("gateaux", {
 		},
 		gateau_form_param_fk: {
 			type: Sequelize.INTEGER,
+			allowNull: true,
 			reference: {
 				model: 'Param_generals',
 				key: 'param_id'
@@ -58,6 +59,7 @@ let Gateau = db.define("gateaux", {
 		},
 		gateau_type_param_fk: {
 			type: Sequelize.INTEGER,
+			allowNull: true,
 			reference: {
 				model: 'Param_generals',
 				key: 'param_id'

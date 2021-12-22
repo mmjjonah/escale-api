@@ -18,10 +18,16 @@ let Command = db.define("commands", {
 		command_evenement: {
 			type: Sequelize.STRING(255)
 		},
+		command_montant_reduction: {
+			type: Sequelize.INTEGER
+		},
 		command_montant_a_compte: {
 			type: Sequelize.INTEGER
 		},
 		command_retour_client: {
+			type: Sequelize.TEXT
+		},
+		command_accessoire: {
 			type: Sequelize.TEXT
 		},
 		command_client_fk: {

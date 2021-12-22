@@ -313,11 +313,12 @@ router.get('/purchase-order/:id', async (req, res) => {
 		printData.modele = command.gateaux.map(g => g.gateau_model).join('\n')
 		printData.sexe = command.client.client_sexe
 		printData.age = command.client.client_age
-		printData.autre = ''
+		printData.autre = command.command_accessoire
 		printData.contact = command.client.client_contact
 		printData.observation = command.command_retour_client
 		printData.montant_total = command.gateaux.reduce((acc, g) => acc + parseInt(g.gateau_montant_total), 0)
 		printData.avance = command.command_montant_a_compte
+		printData.reduction = command.command_montant_reduction
 		printData.reste = printData.montant_total - parseInt(command.command_montant_a_compte)
 		printData.gateaux = command.gateaux.map(g => {
 			return {

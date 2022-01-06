@@ -36,6 +36,7 @@ router.put('/', checkToken, async (req, res) => {
 			command_lieu_livraison,
 			command_evenement,
 			command_accessoire,
+			command_type,
 			command_montant_reduction,
 			command_montant_a_compte,
 			gateaux
@@ -68,6 +69,7 @@ router.put('/', checkToken, async (req, res) => {
 			command_date_livraison: command_date_livraison + ' ' + command_heure_livraison,
 			command_evenement,
 			command_accessoire,
+			command_type,
 			command_montant_reduction,
 			command_montant_a_compte,
 			command_client_fk: client.client_id,

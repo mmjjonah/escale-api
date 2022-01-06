@@ -48,7 +48,7 @@
             <tr>
                 <td>CONTACT (Tel / Fb)</td>
                 <td><%= contact %></td>
-                <td colspan="2" rowspan="7" style="padding: 0;margin-top: 0;">
+                <td colspan="2" rowspan="8" style="padding: 0;margin-top: 0;">
                     <table style="top: 0;">
                         <tr>
                             <td>QTE (PAX)</td>
@@ -92,27 +92,25 @@
                 <td><%= reduction %></td>
             </tr>
             <tr>
-                <td>SEXE / ÂGE</td>
-                <td><%= sexe %> / <%= age %> ans</td>
                 <td>MONTANT TOTAL</td>
                 <td><%= montant_total %></td>
             </tr>
             <tr>
-                <td>AUTRE</td>
-                <td><%= autre %></td>
+                <td>SEXE / ÂGE</td>
+                <td><%= sexe %> / <%= age %> ans</td>
                 <td>AVANCE</td>
                 <td><%= avance %></td>
             </tr>
             <tr>
-                <td>OBSERVATION</td>
-                <td><%= observation %></td>
+                <td>AUTRE</td>
+                <td><%= autre %></td>
                 <td>RESTE A PAYER</td>
                 <td><%= reste - reduction %></td>
             </tr>
         </table>
         <div style="margin-top: 20px;display: flex;flex-wrap: wrap;justify-content: flex-end;direction: rtl;">
             <% gateaux.forEach(gateau => { %>
-                <img src="<%= gateau.gateau_model %>" width="100">
+                <img src="<%= gateau.gateau_model %>" width="150">
             <% }); %>
         </div>
     </body>

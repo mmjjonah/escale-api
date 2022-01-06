@@ -30,6 +30,9 @@ let Command = db.define("commands", {
 		command_accessoire: {
 			type: Sequelize.TEXT
 		},
+		command_type: {
+			type: Sequelize.TEXT
+		},
 		command_client_fk: {
 			type: Sequelize.INTEGER,
 			reference: {

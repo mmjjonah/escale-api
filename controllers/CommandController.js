@@ -390,8 +390,10 @@ router.get('/day-data', checkToken, async (req, res) => {
 	data.commandDay = (await db.query(`SELECT count(*) AS count FROM commands WHERE DATE(commands.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
 	data.gateauDay = (await db.query(`SELECT count(*) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
 	data.clientDay = (await db.query(`SELECT count(*) AS count FROM clients WHERE DATE(clients.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
-	data.montantDay = (await db.query(`SELECT sum(gateaux.gateau_montant_total) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	const montantTotal = (await db.query(`SELECT sum(gateaux.gateau_montant_total) AS count FROM gateaux WHERE DATE(gateaux.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
+	const montantReduction = (await db.query(`SELECT sum(commands.command_montant_reduction) AS count FROM commands WHERE DATE(commands.created_at) = '${castDateForDb(new Date())}'`))[0][0].count
 
+	data.montantDay = montantTotal - montantReduction;
 	res.json({
 		message: 'Results',
 		data,

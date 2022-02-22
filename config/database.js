@@ -10,5 +10,8 @@ db.authenticate()
 .then((_) => {
   console.log("Base de données connecté");
 })
+.catch(err => {
+  console.error(err);
+})
 
 module.exports = db

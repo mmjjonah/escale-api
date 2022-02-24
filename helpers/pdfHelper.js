@@ -1,6 +1,7 @@
 "use strict"
 const pdf = require('html-pdf')
 const fs = require("fs");
+const path = require('path');
 
 function htmlToPdf(htmlContent, options = {
 	path: 'uploads/',
@@ -9,7 +10,7 @@ function htmlToPdf(htmlContent, options = {
 }) {
 	return new Promise(((resolve, reject) => {
 		const pdfOptions = {
-			phantomPath: "../node_modules/phantomjs-prebuilt/bin/phantomjs",
+			phantomPath: path.resolve("/bin/phantomjs"),
 			format: options.format,
 			border: {
 				top: "4mm",
